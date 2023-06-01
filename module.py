@@ -45,9 +45,10 @@ class Module(module.ModuleModel):
         from .tools.config import Config
         self.descriptor.register_tool('config', Config())
 
-        from .tools import rpc_tools, api_tools
+        from .tools import rpc_tools, api_tools, minio_client
         self.descriptor.register_tool('rpc_tools', rpc_tools)
         self.descriptor.register_tool('api_tools', api_tools)
+        self.descriptor.register_tool('minio_client', minio_client)
 
         from .tools import db
         self.db = db
