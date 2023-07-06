@@ -20,7 +20,7 @@ from urllib.parse import urlparse
 LOCAL_DEV = True
 
 # ALLOWED_EXTENSIONS = ['zip', 'py']
-CURRENT_RELEASE = 'latest'
+CURRENT_RELEASE = 'beta-1.0'
 REDIS_USER = environ.get('REDIS_USER', '')
 REDIS_PASSWORD = environ['REDIS_PASSWORD']
 REDIS_HOST = environ['REDIS_HOST']
