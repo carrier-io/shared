@@ -22,7 +22,7 @@ class Config(metaclass=SingletonABC):
     # this determines whether some secrets are overwritten
     # with env values upon centry restart
     PERSISTENT_SECRETS = bool(environ.get('PERSISTENT_SECRETS'))
-    CURRENT_RELEASE = environ.get('CURRENT_RELEASE', 'latest')
+    CURRENT_RELEASE = environ.get('CURRENT_RELEASE', 'beta-2.0')
     ADMINISTRATION_MODE = 'administration'
     DEFAULT_MODE = 'default'
     MAX_DOTS_ON_CHART = 100
