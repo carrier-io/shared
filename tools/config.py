@@ -24,6 +24,8 @@ from ..patterns import SingletonABC
 
 
 class Config(metaclass=SingletonABC):
+    ADMINISTRATION_MODE = 'administration'
+    DEFAULT_MODE = 'default'
     APP_HOST: str = os.environ.get("IP") or "0.0.0.0"
     APP_PORT: int = int(os.environ.get("APP_PORT", 5000)) or 5000
     DATABASE_VENDOR: str = os.environ.get("DATABASE_VENDOR", "postgres")

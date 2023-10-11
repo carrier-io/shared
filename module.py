@@ -55,6 +55,9 @@ class Module(module.ModuleModel):
         self.descriptor.register_tool('db_tools', db_tools)
         self.descriptor.register_tool('db_migrations', db_migrations)
 
+        from .tools.flow_tools import FlowNodes
+        self.descriptor.register_tool('flow_tools', FlowNodes(self))
+
         # self.context.app.config.from_object(self.config)
         from .init_db import init_db
         init_db()
