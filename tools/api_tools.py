@@ -253,8 +253,8 @@ def endpoint_metrics(function):
         from tools import auth, rpc_tools
         start_time, date_ = time.perf_counter(), datetime.now()
         payload = {
-            'project_id': request.view_args.get('project_id'),
-            'mode': request.view_args.get('mode'),
+            'project_id': request.view_args.get('project_id', kwargs.get('project_id')),
+            'mode': request.view_args.get('mode', kwargs.get('mode')),
             'endpoint': request.endpoint,
             'method': request.method,
             'user': auth.current_user().get("id"),
