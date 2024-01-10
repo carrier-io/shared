@@ -252,6 +252,13 @@ def endpoint_metrics(function):
     def wrapper(*args, **kwargs):
         from tools import auth, rpc_tools
         start_time, date_ = time.perf_counter(), datetime.now()
+        req_body = dict()
+        if request.content_type == 'application/json':
+            if request.json:
+                try:
+                    req_body = dict(request.json)
+                except Exception as e:
+                    log.warning(f'endpoint_metrics body issue {req_body}')
         payload = {
             'project_id': request.view_args.get('project_id', kwargs.get('project_id')),
             'mode': request.view_args.get('mode', kwargs.get('mode')),
@@ -262,7 +269,7 @@ def endpoint_metrics(function):
             'date': date_,
             'view_args': request.view_args,
             'query_params': request.args.to_dict(),
-            'json': dict(request.json) if request.content_type == 'application/json' else {},
+            'json': req_body
         }
         if request.files:
             payload['files'] = {k: secure_filename(v.filename) for k, v in request.files.to_dict().items()}
@@ -271,10 +278,10 @@ def endpoint_metrics(function):
             def send_metrics(response):
                 payload['run_time'] = time.perf_counter() - start_time
                 payload['status_code'] = response.status_code
-                # try:
-                #     payload['response'] = response.get_data(as_text=True)
-                # except RuntimeError as e:
-                #     log.warning(f'send_metrics response.get_data raised {e}')
+                try:
+                    payload['response'] = response.get_data(as_text=True)
+                except RuntimeError as e:
+                    log.warning(f'send_metrics response.get_data raised {e}')
                 rpc_tools.EventManagerMixin().event_manager.fire_event('usage_api_monitor', payload)
                 return response
             return function(*args, **kwargs)
