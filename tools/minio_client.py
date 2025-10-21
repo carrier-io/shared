@@ -216,16 +216,22 @@ class MinioClientABC(ABC, EventManagerMixin):
             else:
                 raise
         results = []
-        for event in response['Payload']:
-            if 'Records' in event:
-                payload = event['Records']['Payload'].decode('utf-8')
-                for line in payload.split('\n'):
-                    try:
-                        results.append(loads(line))
-                    except Exception:
-                        pass
-            if 'Stats' in event:
-                throughput_monitor(client=self, file_size=event['Stats']['Details']['BytesScanned'])
+        payload = response['Payload']
+        try:
+            for event in payload:
+                if 'Records' in event:
+                    record_payload = event['Records']['Payload'].decode('utf-8')
+                    for line in record_payload.split('\n'):
+                        try:
+                            results.append(loads(line))
+                        except Exception:
+                            pass
+                if 'Stats' in event:
+                    throughput_monitor(client=self, file_size=event['Stats']['Details']['BytesScanned'])
+        finally:
+            # This ensures the underlying HTTP connection is released
+            if hasattr(payload, 'close'):
+                payload.close()
         return results
 
     def is_file_exist(self, bucket: str, file_name: str):
